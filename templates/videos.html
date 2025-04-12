@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Detection</title>
+</head>
+<body>
+    <h1>Upload a Video</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="video" required>
+        <input type="submit" value="Detect">
+    </form>
+    {% if uploaded %}
+    <h2>Processed Video:</h2>
+    <video width="640" height="480" controls>
+        <source src="{{ url_for('serve_static', filename=result_video) }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    {% endif %}
+</body>
+</html>
