@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detection Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1e40af',
+            secondary: '#7c3aed',
+            accent: '#059669',
+            danger: '#dc2626',
+            gradientStart: '#1e3a8a',
+            gradientEnd: '#7e22ce',
+            neutral: '#f3f4f6',
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.6s ease-out',
+            'slide-up': 'slideUp 0.6s ease-out',
+            'pulse-glow': 'pulseGlow 2.5s infinite',
+            'scale-in': 'scaleIn 0.4s ease-out',
+            'bounce-in': 'bounceIn 0.5s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(30px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            pulseGlow: {
+              '0%, 100%': { boxShadow: '0 0 8px rgba(0,0,0,0.1)' },
+              '50%': { boxShadow: '0 0 25px rgba(30, 64, 175, 0.6)' },
+            },
+            scaleIn: {
+              '0%': { transform: 'scale(0.9)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+            bounceIn: {
+              '0%': { transform: 'scale(0.8)', opacity: '0' },
+              '50%': { transform: 'scale(1.05)', opacity: '0.7' },
+              '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    };
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .gradient-bg {
+      background: linear-gradient(145deg, #1e3a8a, #7e22ce);
+    }
+    .card-hover:hover {
+      transform: translateY(-8px);
+      transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .chart-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+    }
+    .chart-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at center, rgba(30, 64, 175, 0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .chart-container:hover::before {
+      opacity: 1;
+    }
+    .text-gradient {
+      background: linear-gradient(90deg, #1e40af, #7c3aed);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    ::selection {
+      background: rgba(30, 64, 175, 0.3);
+      color: #fff;
+    }
+  </style>
+</head>
+<body class="bg-neutral dark:bg-gray-950 text-gray-900 dark:text-gray-50 transition-colors duration-500 min-h-screen font-sans">
+
+  <!-- Toggle Mode -->
+  <div class="flex justify-end p-8 animate-bounce-in">
+    <button id="toggle-theme" class="px-6 py-3 rounded-full bg-gradient-to-r from-gradientStart to-gradientEnd text-white hover:from-gradientEnd hover:to-gradientStart transition-all duration-400 shadow-xl flex items-center space-x-3 animate-scale-in group">
+      <i class="fas fa-moon transition-transform duration-400 group-hover:scale-110"></i>
+      <span class="font-medium">Switch Theme</span>
+    </button>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-8 py-10">
+    <!-- Title -->
+    <div class="text-center mb-16 animate-fade-in">
+      <h1 class="text-6xl font-extrabold text-gradient animate-pulse tracking-tight">📊 Detection Insights</h1>
+      <p class="text-xl text-gray-500 dark:text-gray-400 mt-3 animate-slide-up max-w-2xl mx-auto">Uncover powerful trends and metrics from your object detection data with real-time analytics.</p>
+    </div>
+
+    <!-- Weekly Summary -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+      <div class="bg-gradient-to-br from-primary to-blue-600 p-8 rounded-3xl shadow-2xl text-white glassmorphism card-hover animate-slide-up" style="animation-delay: 0.1s;">
+        <div class="text-base font-semibold flex items-center space-x-3">
+          <i class="fas fa-chart-bar text-xl"></i>
+          <span>Total Detections</span>
+        </div>
+        <div id="total-detections" class="text-4xl font-extrabold mt-3 tracking-tight">--</div>
+      </div>
+      <div class="bg-gradient-to-br from-accent to-emerald-600 p-8 rounded-3xl shadow-2xl text-white glassmorphism card-hover animate-slide-up" style="animation-delay: 0.2s;">
+        <div class="text-base font-semibold flex items-center space-x-3">
+          <i class="fas fa-calculator text-xl"></i>
+          <span>Average / Day</span>
+        </div>
+        <div id="avg-detections" class="text-4xl font-extrabold mt-3 tracking-tight">--</div>
+      </div>
+      <div class="bg-gradient-to-br from-secondary to-purple-600 p-8 rounded-3xl shadow-2xl text-white glassmorphism card-hover animate-slide-up" style="animation-delay: 0.3s;">
+        <div class="text-base font-semibold flex items-center space-x-3">
+          <i class="fas fa-star text-xl"></i>
+          <span>Peak Day</span>
+        </div>
+        <div id="peak-day" class="text-4xl font-extrabold mt-3 tracking-tight">--</div>
+      </div>
+      <div class="bg-gradient-to-br from-danger to-red-600 p-8 rounded-3xl shadow-2xl text-white glassmorphism card-hover animate-slide-up" style="animation-delay: 0.4s;">
+        <div class="text-base font-semibold flex items-center space-x-3">
+          <i class="fas fa-exclamation-circle text-xl"></i>
+          <span>Max Count</span>
+        </div>
+        <div id="max-count" class="text-4xl font-extrabold mt-3 tracking-tight">--</div>
+      </div>
+    </div>
+
+    <!-- Date Filter Form -->
+    <div id="metrics-form-container" class="flex flex-wrap gap-8 items-end bg-white dark:bg-gray-900 p-10 rounded-3xl shadow-2xl mb-16 glassmorphism animate-fade-in">
+      <div class="flex flex-col animate-slide-up w-full sm:w-auto">
+        <label for="start-date" class="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">Start Date</label>
+        <input type="date" id="start-date" name="start_date" class="border-none rounded-xl p-4 shadow-lg bg-gray-100 dark:bg-gray-800 dark:text-white focus:ring-4 focus:ring-primary/50 transition-all duration-400 w-full sm:w-64">
+      </div>
+      <div class="flex flex-col animate-slide-up w-full sm:w-auto" style="animation-delay: 0.1s;">
+        <label for="end-date" class="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">End Date</label>
+        <input type="date" id="end-date" name="end_date" class="border-none rounded-xl p-4 shadow-lg bg-gray-100 dark:bg-gray-800 dark:text-white focus:ring-4 focus:ring-primary/50 transition-all duration-400 w-full sm:w-64">
+      </div>
+      <button id="submit-btn" class="bg-gradient-to-r from-gradientStart to-gradientEnd text-white px-10 py-4 rounded-xl hover:from-gradientEnd hover:to-gradientStart transition-all duration-400 shadow-xl flex items-center space-x-3 animate-scale-in hover:scale-105 w-full sm:w-auto">
+        <i class="fas fa-search text-lg"></i>
+        <span class="font-semibold">Analyze Metrics</span>
+      </button>
+    </div>
+
+    <!-- Bar Graph -->
+    <div class="bg-white dark:bg-gray-900 p-10 rounded-3xl shadow-2xl mb-16 chart-container animate-fade-in glassmorphism">
+      <h2 class="text-3xl font-bold mb-8 flex items-center space-x-3 text-gradient">
+        <i class="fas fa-chart-bar text-2xl"></i>
+        <span>Daily Detection Breakdown</span>
+      </h2>
+      <canvas id="metrics-chart" height="120"></canvas>
+    </div>
+
+    <!-- Recent Trends Section -->
+    <div class="bg-white dark:bg-gray-900 p-10 rounded-3xl shadow-2xl chart-container animate-fade-in glassmorphism">
+      <h2 class="text-3xl font-bold mb-8 flex items-center space-x-3 text-gradient">
+        <i class="fas fa-chart-line text-2xl"></i>
+        <span>Trending Detection Patterns</span>
+      </h2>
+      <canvas id="trend-chart" height="100"></canvas>
+    </div>
+  </div>
+
+  <script src="../static/js/chart-handler.js"></script>
+</body>
+</html>

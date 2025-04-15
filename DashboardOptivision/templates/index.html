@@ -4,9 +4,91 @@
   <meta charset="UTF-8" />
   <title>OptiVision Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Favicon -->
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
-  <link href="/static/css/output.css" rel="stylesheet" />
+  <!-- Favicon -->
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts (Inter) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1e40af',
+            secondary: '#7c3aed',
+            accent: '#059669',
+            danger: '#dc2626',
+            gradientStart: '#1e3a8a',
+            gradientEnd: '#7e22ce',
+            neutral: '#f3f4f6',
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.6s ease-out',
+            'slide-up': 'slideUp 0.6s ease-out',
+            'pulse-glow': 'pulseGlow 2.5s infinite',
+            'scale-in': 'scaleIn 0.4s ease-out',
+            'bounce-in': 'bounceIn 0.5s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(30px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            pulseGlow: {
+              '0%, 100%': { boxShadow: '0 0 8px rgba(0,0,0,0.1)' },
+              '50%': { boxShadow: '0 0 25px rgba(30, 64, 175, 0.6)' },
+            },
+            scaleIn: {
+              '0%': { transform: 'scale(0.9)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+            bounceIn: {
+              '0%': { transform: 'scale(0.8)', opacity: '0' },
+              '50%': { transform: 'scale(1.05)', opacity: '0.7' },
+              '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    };
+  </script>
+  <style>
+    .gradient-bg {
+      background: linear-gradient(145deg, #1e3a8a, #7e22ce);
+    }
+    .card-hover:hover {
+      transform: translateY(-8px);
+      transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      border: 2px solid rgba(79, 79, 79, 0.25);
+    }
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .text-gradient {
+      background: linear-gradient(90deg, #1e40af, #7c3aed);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    ::selection {
+      background: rgba(30, 64, 175, 0.3);
+      color: #fff;
+    }
+  </style>
   <script>
     // Load dark mode preference before render
     if (
@@ -17,81 +99,119 @@
     }
   </script>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen font-sans transition duration-300">
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-50 min-h-screen font-sans transition duration-300">
 
   <!-- Navbar -->
-  <header class="bg-white dark:bg-gray-800 shadow-lg shadow-indigo-300/40 dark:shadow-indigo-900">
+  <header class="bg-gray-100 dark:bg-gray-800 shadow-lg shadow-indigo-300/40 dark:shadow-indigo-900">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="text-4xl font-bold text-indigo-600 dark:text-indigo-400">OptiVision</div>
-      <div class="flex items-center space-x-4">
-        <a href="/about" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition">About</a>
-        <a href="/settings" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition">Settings</a>
-        <!-- Dark Mode Toggle -->
-        <button id="theme-toggle" class="bg-gray-200 dark:bg-gray-700 text-sm px-3 py-1.5 rounded-full transition">
-          Toggle Dark
+      <div class="text-3xl font-extrabold text-gradient animate-fade-in">OptiVision</div>
+      <div class="flex items-center space-x-6">
+        <a href="/about" class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition font-medium animate-slide-up">About</a>
+        <a href="/settings" class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition font-medium animate-slide-up" style="animation-delay: 0.1s;">Settings</a>
+        <!-- Dark Mode Toggle (from analytics.html) -->
+        <button id="theme-toggle" class="bg-primary dark:bg-secondary text-white px-3 py-1.5 rounded-full hover:bg-indigo-700 dark:hover:bg-purple-600 transition flex items-center justify-center animate-scale-in">
+          <i class="fas fa-sun"></i>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Hero section -->
-  <section class="max-w-7xl mx-auto px-6 py-10 text-center">
-    <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 dark:text-white mb-4">Welcome to OptiVision</h1>
-    <p class="text-gray-600 dark:text-gray-300 text-lg">Real-time Object Detection & Analysis Toolkit</p>
+  <!-- Hero Section -->
+  <section class="max-w-7xl mx-auto px-6 py-16 text-center ">
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-gradient mb-6 animate-pulse">Welcome to OptiVision</h1>
+    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto animate-slide-up">Your ultimate toolkit for real-time object detection and advanced analytics, powered by cutting-edge AI.</p>
   </section>
 
   <!-- Dashboard Cards -->
-  <main class="max-w-7xl mx-auto px-6 py-4">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-      <!-- Cards -->
-      <a href="/stream" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">RTSP Stream</h2>
-        <p class="text-gray-600 dark:text-gray-300">Live object detection on RTSP camera feeds</p>
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- RTSP Stream Card -->
+      <a href="/stream" class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl glassmorphism card-hover animate-slide-up">
+        <div class="flex justify-center mb-6">
+          <i class="fas fa-video text-5xl text-primary dark:text-accent"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3 text-center">RTSP Stream</h2>
+        <p class="text-gray-600 dark:text-gray-300 text-center">Stream live feeds from RTSP cameras and detect objects in real-time with precision.</p>
       </a>
 
-      <a href="/process-image" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">Process Image</h2>
-        <p class="text-gray-600 dark:text-gray-300">Upload and analyze static images</p>
+      <!-- Process Image Card -->
+      <a href="/process-image" class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl glassmorphism card-hover animate-slide-up" style="animation-delay: 0.1s;">
+        <div class="flex justify-center mb-6">
+          <i class="fas fa-image text-5xl text-primary dark:text-accent"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3 text-center">Process Image</h2>
+        <p class="text-gray-600 dark:text-gray-300 text-center">Upload static images for detailed object detection and analysis.</p>
       </a>
 
-      <a href="/process-video" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">Process Video</h2>
-        <p class="text-gray-600 dark:text-gray-300">Run detection on uploaded videos</p>
+      <!-- Process Video Card -->
+      <a href="/process-video" class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl glassmorphism card-hover animate-slide-up" style="animation-delay: 0.2s;">
+        <div class="flex justify-center mb-6">
+          <i class="fas fa-film text-5xl text-primary dark:text-accent"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3 text-center">Process Video</h2>
+        <p class="text-gray-600 dark:text-gray-300 text-center">Analyze uploaded videos to identify and track objects frame by frame.</p>
       </a>
 
-      <a href="/process-stream" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">Process Stream</h2>
-        <p class="text-gray-600 dark:text-gray-300">Analyze streams from other sources</p>
+      <!-- Process Stream Card -->
+      <a href="/process-stream" class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl glassmorphism card-hover animate-slide-up" style="animation-delay: 0.3s;">
+        <div class="flex justify-center mb-6">
+          <i class="fas fa-stream text-5xl text-primary dark:text-accent"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3 text-center">Process Stream</h2>
+        <p class="text-gray-600 dark:text-gray-300 text-center">Connect and analyze streams from various sources for seamless detection.</p>
       </a>
 
-      <a href="/metrics" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">Graphs & Analytics</h2>
-        <p class="text-gray-600 dark:text-gray-300">See performance, detections, and stats</p>
+      <!-- Graphs & Analytics Card -->
+      <a href="/metrics" class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl glassmorphism card-hover animate-slide-up" style="animation-delay: 0.4s;">
+        <div class="flex justify-center mb-6">
+          <i class="fas fa-chart-line text-5xl text-primary dark:text-accent"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3 text-center">Graphs & Analytics</h2>
+        <p class="text-gray-600 dark:text-gray-300 text-center">Visualize detection performance and trends with interactive charts.</p>
       </a>
 
-      <a href="/chatbot" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">AI Chatbot</h2>
-        <p class="text-gray-600 dark:text-gray-300">Talk to the assistant for help and actions</p>
+      <!-- AI Chatbot Card -->
+      <a href="http://127.0.0.1:5200/" class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl glassmorphism card-hover animate-slide-up" style="animation-delay: 0.5s;">
+        <div class="flex justify-center mb-6">
+          <i class="fas fa-robot text-5xl text-primary dark:text-accent"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3 text-center">AI Chatbot</h2>
+        <p class="text-gray-600 dark:text-gray-300 text-center">Get instant help and insights from our intelligent assistant.</p>
       </a>
-
     </div>
   </main>
 
   <!-- Footer -->
-  <footer class="text-center text-sm text-gray-500 dark:text-gray-400 mt-16 mb-6">
-    &copy; 2025 OptiVision. All rights reserved.
+  <footer class="text-center text-sm text-gray-500 dark:text-gray-400 mt-16 mb-6 animate-fade-in">
+    © 2025 OptiVision. All rights reserved.
   </footer>
 
   <!-- Dark Mode Toggle Script -->
   <script>
     const toggleBtn = document.getElementById("theme-toggle");
+    const icon = toggleBtn.querySelector("i");
+
+    // Function to toggle theme and update the icon
     toggleBtn.addEventListener("click", () => {
       const html = document.documentElement;
       html.classList.toggle("dark");
-      localStorage.setItem("theme", html.classList.contains("dark") ? "dark" : "light");
-    });
-  </script>
+      const isDarkMode = html.classList.contains("dark");
+      localStorage.setItem("theme", isDarkMode ? "dark" : "light");
 
+      // Update icon based on theme
+      icon.classList.toggle("fa-sun", !isDarkMode);
+      icon.classList.toggle("fa-moon", isDarkMode);
+    });
+
+    // Set initial icon based on saved theme
+    if (localStorage.getItem("theme") === "dark" || (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      document.documentElement.classList.add("dark");
+      icon.classList.add("fa-moon");
+      icon.classList.remove("fa-sun");
+    } else {
+      icon.classList.add("fa-sun");
+      icon.classList.remove("fa-moon");
+    }
+  </script>
 </body>
 </html>
