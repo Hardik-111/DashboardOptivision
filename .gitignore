@@ -1,0 +1,6 @@
+./OptiVision/pretrained_models
+./OptiVision/libcudnn8_8.1.1.33-1+cuda11.2_amd64.deb
+./OptiVision/cuda-11-2_11.2.2-1_amd64.deb
+./OptiVision/.env
+./OptiVision/.vercel
+./DashboardOptivision/pretrained_models
