@@ -5,7 +5,7 @@ chatbot = Blueprint('chatbot', __name__)
 
 # Initialize handlers for fixed and dynamic responses
 fixed_handler = FixedResponseHandler("fixed_qa.csv")
-dynamic_handler = DynamicResponseHandler("detection_log2.csv")
+dynamic_handler = DynamicResponseHandler("..\DashboardOptivision\detection_log2.csv")
 
 @chatbot.route('/')
 def index():
