@@ -65,7 +65,7 @@ class Detector:
         self.model = tf.saved_model.load(os.path.join(self.cacheDir, "checkpoints", self.modelName, "saved_model"))
         print("Model " + self.modelName + " loaded successfully...")
 
-    def createBoundingBox(self, image, threshold=0.5):
+    def createBoundingBox(self, image, threshold=0.5, ref=True):
         inputTensor = tf.convert_to_tensor(image[tf.newaxis, ...], dtype=tf.uint8)
         detections = self.model(inputTensor)
         bboxs = detections['detection_boxes'][0].numpy()
@@ -127,10 +127,11 @@ class Detector:
                     self.max_time=current_time
                     
                 # Log details to CSV
-                with open(csv_file, mode="a", newline="") as file:
-                    writer = csv.writer(file)
-                    writer.writerow([self.detection_ids[classLabelText], classLabelText, current_date, current_time, 
-                                     dimensions, xmin, ymin, xmax, ymax, imW, imH,current_people_count,self.max_people_count,self.max_time])
+                if ref :
+                    with open(csv_file, mode="a", newline="") as file:
+                        writer = csv.writer(file)
+                        writer.writerow([self.detection_ids[classLabelText], classLabelText, current_date, current_time, 
+                                        dimensions, xmin, ymin, xmax, ymax, imW, imH,current_people_count,self.max_people_count,self.max_time])
 
                 self.detection_ids[classLabelText] += 1  # Increment ID for next detection
 
@@ -153,18 +154,19 @@ class Detector:
         # print("--- ////    \\\\ -----",self.max_people_count,"  ",current_people_count)
         return image
 
-    def predictImage(self, imagePath, threshold=0.5, save_path=None):
+    def predictImage(self, imagePath, threshold=0.5, save_path=None)-> str:
         if save_path is None:
             save_path = os.path.join("result", "images")
 
         os.makedirs(save_path, exist_ok=True)
 
         image = cv2.imread(imagePath)
-        bboxImage = self.createBoundingBox(image, threshold)
+        bboxImage = self.createBoundingBox(image, threshold,ref=False)
         output_path = os.path.join(save_path, os.path.basename(imagePath)[:-4] + "_result.jpg")
         cv2.imwrite(output_path, bboxImage)
 
         # Display the result in a popup window
+        return output_path
         self.showImagePopup(bboxImage)
 
     def predictVideoSource(self, videoPath, threshold=0.5, save_path=None, process_every_nth_frame=35):
