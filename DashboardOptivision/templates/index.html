@@ -1,77 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="transition duration-300">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>OptiVision Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
+  <link href="/static/css/output.css" rel="stylesheet" />
+  <script>
+    // Load dark mode preference before render
+    if (
+      localStorage.getItem("theme") === "dark" ||
+      (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    }
+  </script>
 </head>
-<body class="bg-gray-50 min-h-screen font-sans">
+<body class="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen font-sans transition duration-300">
 
   <!-- Navbar -->
-  <header class="bg-white shadow-sm">
+  <header class="bg-white dark:bg-gray-800 shadow-lg shadow-indigo-300/40 dark:shadow-indigo-900">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="text-2xl font-bold text-indigo-600">OptiVision</div>
-      <nav class="space-x-4">
-        <a href="/about" class="text-gray-600 hover:text-indigo-600 transition">About</a>
-        <a href="/settings" class="text-gray-600 hover:text-indigo-600 transition">Settings</a>
-      </nav>
+      <div class="text-4xl font-bold text-indigo-600 dark:text-indigo-400">OptiVision</div>
+      <div class="flex items-center space-x-4">
+        <a href="/about" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition">About</a>
+        <a href="/settings" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition">Settings</a>
+        <!-- Dark Mode Toggle -->
+        <button id="theme-toggle" class="bg-gray-200 dark:bg-gray-700 text-sm px-3 py-1.5 rounded-full transition">
+          Toggle Dark
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- Hero section (optional intro) -->
+  <!-- Hero section -->
   <section class="max-w-7xl mx-auto px-6 py-10 text-center">
-    <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-4">Welcome to OptiVision</h1>
-    <p class="text-gray-600 text-lg">Real-time Object Detection & Analysis Toolkit</p>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 dark:text-white mb-4">Welcome to OptiVision</h1>
+    <p class="text-gray-600 dark:text-gray-300 text-lg">Real-time Object Detection & Analysis Toolkit</p>
   </section>
 
   <!-- Dashboard Cards -->
   <main class="max-w-7xl mx-auto px-6 py-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-      <!-- Card 1: RTSP Stream -->
-      <a href="/stream" class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 mb-2">RTSP Stream</h2>
-        <p class="text-gray-600">Live object detection on RTSP camera feeds</p>
+      <!-- Cards -->
+      <a href="/stream" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
+        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">RTSP Stream</h2>
+        <p class="text-gray-600 dark:text-gray-300">Live object detection on RTSP camera feeds</p>
       </a>
 
-      <!-- Card 2: Process Image -->
-      <a href="/process-image" class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 mb-2">Process Image</h2>
-        <p class="text-gray-600">Upload and analyze static images</p>
+      <a href="/process-image" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
+        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">Process Image</h2>
+        <p class="text-gray-600 dark:text-gray-300">Upload and analyze static images</p>
       </a>
 
-      <!-- Card 3: Process Video -->
-      <a href="/process-video" class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 mb-2">Process Video</h2>
-        <p class="text-gray-600">Run detection on uploaded videos</p>
+      <a href="/process-video" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
+        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">Process Video</h2>
+        <p class="text-gray-600 dark:text-gray-300">Run detection on uploaded videos</p>
       </a>
 
-      <!-- Card 4: Process Stream -->
-      <a href="/process-stream" class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 mb-2">Process Stream</h2>
-        <p class="text-gray-600">Analyze streams from other sources</p>
+      <a href="/process-stream" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
+        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">Process Stream</h2>
+        <p class="text-gray-600 dark:text-gray-300">Analyze streams from other sources</p>
       </a>
 
-      <!-- Card 5: Graphs -->
-      <a href="/metrics" class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 mb-2">Graphs & Analytics</h2>
-        <p class="text-gray-600">See performance, detections, and stats</p>
+      <a href="/metrics" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
+        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">Graphs & Analytics</h2>
+        <p class="text-gray-600 dark:text-gray-300">See performance, detections, and stats</p>
       </a>
 
-      <!-- Card 6: Chatbot -->
-      <a href="/chatbot" class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
-        <h2 class="text-xl font-semibold text-indigo-700 mb-2">AI Chatbot</h2>
-        <p class="text-gray-600">Talk to the assistant for help and actions</p>
+      <a href="/chatbot" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
+        <h2 class="text-xl font-semibold text-indigo-700 dark:text-indigo-400 mb-2">AI Chatbot</h2>
+        <p class="text-gray-600 dark:text-gray-300">Talk to the assistant for help and actions</p>
       </a>
 
     </div>
   </main>
 
-  <!-- Footer (optional) -->
-  <footer class="text-center text-sm text-gray-500 mt-16 mb-6">
+  <!-- Footer -->
+  <footer class="text-center text-sm text-gray-500 dark:text-gray-400 mt-16 mb-6">
     &copy; 2025 OptiVision. All rights reserved.
   </footer>
+
+  <!-- Dark Mode Toggle Script -->
+  <script>
+    const toggleBtn = document.getElementById("theme-toggle");
+    toggleBtn.addEventListener("click", () => {
+      const html = document.documentElement;
+      html.classList.toggle("dark");
+      localStorage.setItem("theme", html.classList.contains("dark") ? "dark" : "light");
+    });
+  </script>
 
 </body>
 </html>

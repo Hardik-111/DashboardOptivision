@@ -77,8 +77,6 @@
                 });
     
                 const data = await response.json(); 
-    
-                const data = await response.json(); 
                 appendMessage("bot", data.response);
             }
         }
@@ -89,7 +87,7 @@
             if (event.key === "Enter") {
                 sendMessage();
             }
-        }
+        })
     
         sendBtn.addEventListener("click", sendMessage);
     
