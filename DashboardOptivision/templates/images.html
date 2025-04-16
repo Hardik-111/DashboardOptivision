@@ -1,17 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Image Detection</title>
+    <meta charset="UTF-8">
+    <title>Image Detection | OptiVision</title>
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
 </head>
-<body>
-    <h1>Upload an Image</h1>
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" required>
-        <input type="submit" value="Detect">
-    </form>
-    {% if uploaded %}
-    <h2>Detection Result:</h2>
-    <img src="{{ url_for('serve_static', filename=result_image) }}" width="600">
-    {% endif %}
+<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100 font-[Inter]">
+    <div class="max-w-5xl mx-auto py-10 px-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-4xl font-bold text-indigo-700 dark:text-indigo-400">🖼️ Image Detection</h1>
+            <button id="darkToggle" class="text-xl p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="hidden fixed top-5 right-5 z-50 px-4 py-2 bg-green-500 text-white rounded shadow-lg transition-opacity duration-300"></div>
+
+        <!-- Upload Form -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 mb-12">
+            <h2 class="text-2xl font-semibold mb-4">Upload and Detect Objects in Image</h2>
+            <form method="POST" enctype="multipart/form-data" class="flex flex-col sm:flex-row gap-4 items-start" onsubmit="showToast('Image uploaded successfully!')">
+                <input type="file" name="image" id="imageInput" required
+                       class="flex-1 block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:rounded-full file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                <button type="submit"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition">
+                    Detect
+                </button>
+            </form>
+
+            <!-- Image Preview -->
+            <div id="previewContainer" class="mt-4 hidden">
+                <p class="mb-2 font-semibold text-sm">Preview:</p>
+                <img id="previewImage" class="w-64 h-auto rounded-lg border border-gray-300"/>
+            </div>
+        </div>
+
+        <!-- Result Image -->
+        {% if uploaded %}
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-10">
+            <h3 class="text-xl font-semibold mb-2 text-indigo-700 dark:text-indigo-400">Detection Result</h3>
+            <img src="{{ url_for('static', filename='result/images/' + result_image) }}"
+                 alt="Detection Result"
+                 class="w-full h-[500px] object-contain rounded-lg border border-gray-300 shadow-sm">
+        </div>
+        {% endif %}
+
+        <!-- Recent Images -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4 text-indigo-700 dark:text-indigo-400">Recent Detected Images</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {% for img in recent_images %}
+                <div class="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-700">
+                    <img src="{{ url_for('static', filename='result/images/' + img) }}"
+                         alt="{{ img }}"
+                         class="w-full h-56 object-cover hover:scale-105 transition duration-200">
+                    <div class="text-center text-xs text-gray-600 dark:text-gray-300 py-2 px-1 truncate">{{ img }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode toggle
+        const toggle = document.getElementById('darkToggle');
+        toggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        // Image Preview
+        const imageInput = document.getElementById('imageInput');
+        const previewImage = document.getElementById('previewImage');
+        const previewContainer = document.getElementById('previewContainer');
+
+        imageInput.addEventListener('change', event => {
+            const file = event.target.files[0];
+            if (file) {
+                previewImage.src = URL.createObjectURL(file);
+                previewContainer.classList.remove('hidden');
+            } else {
+                previewContainer.classList.add('hidden');
+            }
+        });
+    </script>
 </body>
 </html>
