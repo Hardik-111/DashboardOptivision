@@ -121,7 +121,7 @@ Welcome to **OptiVision**! This is the central page of the application where you
 - Chat with an AI-powered assistant for help.
 - Get real-time insights and troubleshooting for detection tasks.
 
-![image](https://github.com/user-attachments/assets/132c871f-684d-4783-9ec3-50527702c747)
+![chatbot-ai](https://github.com/user-attachments/assets/c3727edd-e336-4b88-80de-60e7d578cfc6)
 
 
 ### How to Use:
